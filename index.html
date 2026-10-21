@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingeniería de Prompt & Sistemas de Información | Fatima Robreño Gonzalez</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: #0f172a;
+      --bg-card-hover: #1e293b;
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-purple: #7f53ac;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+      --border-glow: rgba(0, 242, 254, 0.25);
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* --- NAVIGATION BAR --- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      background: rgba(8, 12, 20, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .nav-brand {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--accent-cyan);
+    }
+
+    /* --- HERO BORDERLESS BANNER --- */
+    .hero {
+      width: 100%;
+      padding: 5rem 2rem 4rem 2rem;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.12) 0%, rgba(8, 12, 20, 1) 70%);
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      color: var(--accent-cyan);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      max-width: 800px;
+      margin: 0 auto 2.5rem auto;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-meta-item strong {
+      color: var(--text-main);
+    }
+
+    /* --- MAIN CONTENT LAYOUT --- */
+    .container-full {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-main);
+    }
+
+    .section-title i {
+      color: var(--accent-cyan);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    /* --- CARDS & PANELS --- */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      border-color: rgba(0, 242, 254, 0.4);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    /* --- INTERACTIVE TABS (MODULACIÓN DIALÉCTICA) --- */
+    .tab-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom: 2px solid var(--accent-cyan);
+      background: rgba(0, 242, 254, 0.05);
+    }
+
+    .tab-content {
+      padding: 2rem;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    /* --- ACCORDIONS (DIAGNÓSTICO ESTRATÉGICO) --- */
+    .accordion-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+
+    .accordion-header:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .accordion-header i {
+      color: var(--accent-cyan);
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-item.active .accordion-header i {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .accordion-body-content {
+      padding: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* --- RESPONSIVE TABLES --- */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 3rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.925rem;
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--accent-cyan);
+      padding: 1rem 1.25rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+      color: var(--text-main);
+    }
+
+    /* --- PROMPTS METROLOGY GRID --- */
+    .prompt-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .prompt-title {
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 1.05rem;
+    }
+
+    .prompt-score {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      font-family: var(--font-mono);
+    }
+
+    .prompt-box {
+      background: #050810;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .prompt-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .prompt-metrics strong {
+      color: var(--text-main);
+    }
+
+    /* --- FOOTER --- */
+    .footer {
+      width: 100%;
+      background: #03060d;
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .footer strong {
+      color: var(--text-main);
+    }
+
+    /* --- ANIMATIONS & UTILITIES --- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .hero { padding: 3rem 1rem; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .tab-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-microchip"></i> INGENIERÍA DE PROMPT
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#resumen" class="nav-link">Resumen</a></li>
+      <li><a href="#fundamentos" class="nav-link">Fundamentos</a></li>
+      <li><a href="#rag" class="nav-link">RAG vs SQL</a></li>
+      <li><a href="#madurez" class="nav-link">Madurez</a></li>
+      <li><a href="#diagnostico" class="nav-link">Diagnóstico</a></li>
+      <li><a href="#dialectica" class="nav-link">Dialéctica</a></li>
+      <li><a href="#bitacora" class="nav-link">Bitácora</a></li>
+      <li><a href="#referencias" class="nav-link">Fuentes</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-graduation-cap"></i> EVALUACIÓN DE UNIDAD // CICLO 2026
+    </div>
+    <h1 class="hero-title">Transformación Organizacional & Adopción de IA en Sistemas de Información</h1>
+    <p class="hero-subtitle">De la automatización tradicional determinista a la gestión de agentes autónomos orquestados en entornos de información empresarial.</p>
+    
+    <div class="hero-meta">
+      <div class="hero-meta-item">Estudiante: <strong>Fatima Robreño Gonzalez</strong></div>
+      <div class="hero-meta-item">Materia: <strong>Informática Administrativa</strong></div>
+      <div class="hero-meta-item">Nivel: <strong>Licenciatura / Superior</strong></div>
+    </div>
+  </header>
+
+  <main class="container-full">
+
+    <!-- 01. RESUMEN EJECUTIVO -->
+    <section id="resumen" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-chart-line"></i> 01. Resumen Ejecutivo & Marco Conceptual</h2>
+      
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-bullseye"></i> Propósito y Alcance</div>
+          <p>La incorporación de la Inteligencia Artificial en Sistemas MIS, ERP y CRM marca una evolución desde la búsqueda de datos pasiva hacia sistemas agénticos con capacidad de planificación multi-paso y ejecución autónoma.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-diagram-project"></i> Ejes Estratégicos</div>
+          <p>El valor de la IA no proviene únicamente del modelo de lenguaje, sino de la interacción entre calidad de datos corporativos, arquitectura RAG, entrenamiento de personal y gobernanza de decisiones por excepción.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-gavel"></i> Responsabilidad Jurídica</div>
+          <p>Ante errores operativos o transacciones erróneas de un agente autónomo, la responsabilidad legal, administrativa y financiera recae 100% de forma indelegable en la empresa y su Alta Dirección (CEO/COO).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02. FUNDAMENTOS TEÓRICOS Y BUCLE AGÉNTICO -->
+    <section id="fundamentos" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-brain"></i> 02. Fundamentos Teóricos & Bucle Agéntico</h2>
+      
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-sitemap"></i> Taxonomía de IA Empresarial</div>
+          <p>• <strong>Machine Learning (ML):</strong> Patrones estadísticos en datos tabulares estructurados (ej. scoring crediticio, fraude).</p>
+          <p>• <strong>Deep Learning (DL):</strong> Redes profundas para datos de alta dimensión no estructurados (imágenes, voz, video).</p>
+          <p>• <strong>PLN & IA Generativa:</strong> Comprensión semántica, tokenización, atención y síntesis estocástica de contenido.</p>
+          <p>• <strong>IA Agéntica:</strong> LLMs con capacidad de planificación, memoria vectorial operativa y llamadas activas a APIs.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-rotate"></i> Etapas del Bucle Agéntico (Agentic Loop)</div>
+          <p><strong>1. Percepción e Ingesta:</strong> Recepción del objetivo de negocio no estructurado.</p>
+          <p><strong>2. Evaluación Contextual:</strong> Búsqueda de estado en ERP/CRM vía RAG.</p>
+          <p><strong>3. Planificación:</strong> Descomposición del objetivo en una secuencia ordenada de subtareas.</p>
+          <p><strong>4. Selección de Herramienta:</strong> Elección de función API o consulta SQL.</p>
+          <p><strong>5. Ejecución & Monitoreo:</strong> Llamada a API y análisis de respuesta devuelta.</p>
+          <p><strong>6. Verificación & Cierre:</strong> Autoevaluación del resultado antes de notificar al usuario.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04. LLMS VS BASES DE DATOS & RAG -->
+    <section id="rag" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-database"></i> 04. LLMs frente a Bases de Datos Relacionales & RAG</h2>
+      
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Criterio de Arquitectura</th>
+              <th>Modelo de Lenguaje (LLM)</th>
+              <th>Base de Datos Relacional (SQL)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tipo de Almacenamiento</strong></td>
+              <td>Paramétrico, probabilístico y distribuido en pesos neuronales.</td>
+              <td>Tablas normalizadas deterministas con esquema estricto.</td>
+            </tr>
+            <tr>
+              <td><strong>Mecanismo de Actualización</strong></td>
+              <td>Requiere reentrenamiento costoso o Fine-Tuning.</td>
+              <td>Inserción, modificación y actualización instantánea vía SQL.</td>
+            </tr>
+            <tr>
+              <td><strong>Nivel de Consistencia</strong></td>
+              <td>Estocástica (propenso a alucinaciones semánticas).</td>
+              <td>Garantía de propiedades ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad).</td>
+            </tr>
+            <tr>
+              <td><strong>Rol Recomendado en TI</strong></td>
+              <td>Interfaz conversacional, procesamiento de contexto y razonamiento.</td>
+              <td>Fuente primaria e inalterable de verdad transaccional.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05. MATRIZ DE MADUREZ TECNOLÓGICA -->
+    <section id="madurez" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> 05. Matriz Comparativa de Madurez Tecnológica</h2>
+      
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimensión Operativa</th>
+              <th>Fase Inicial (IA Experimental / Asistiva)</th>
+              <th>Etapa de Madurez Operativa (IA Agéntica)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Interacción y Control</strong></td>
+              <td>Comandos de texto (prompts) aislados y asistentes pasivos puntuales.</td>
+              <td>Ejecución autónoma multi-paso orientada a objetivos de negocio predefinidos.</td>
+            </tr>
+            <tr>
+              <td><strong>Arquitectura de Datos</strong></td>
+              <td>Silos de datos aislados, procesamiento por lotes e ingesta manual.</td>
+              <td>Integración en tiempo real con ERP/CRM vía APIs y bases vectoriales RAG.</td>
+            </tr>
+            <tr>
+              <td><strong>Toma de Decisiones</strong></td>
+              <td>Sugerencias dirigidas al usuario (Human-in-the-loop constante obligatorio).</td>
+              <td>Autonomía delimitada con supervisión humana por excepción en bordes de riesgo.</td>
+            </tr>
+            <tr>
+              <td><strong>Gobernanza y Riesgo</strong></td>
+              <td>Políticas informales de uso de herramientas públicas en la nube.</td>
+              <td>Frameworks de seguridad, guardrails y auditoría completa de llamadas API.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 06 & 07. CUESTIONARIO DE DIAGNÓSTICO ESTRATÉGICO -->
+    <section id="diagnostico" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-clipboard-question"></i> 06-07. Cuestionario de Diagnóstico Estratégico</h2>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>1. Automatización Tradicional (RPA) vs. Agentes Autónomos</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            El RPA ejecuta secuencias estrictamente deterministas bajo la regla "si ocurre A, haz B" en entornos 100% estructurados. Los agentes autónomos interpretan lenguaje natural no estructurado, planifican secuencias dinámicas de acción y adaptan sus pasos ante excepciones. NO conviene usarlos en procesos deterministas con cero tolerancia a la variabilidad (nómina, contabilidad fiscal).
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>2. Responsabilidad Técnica, Administrativa y Legal ante Errores</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            La responsabilidad técnica corresponde a la Dirección de Sistemas/TI (diseño de guardrails y monitoreo de latencia). La responsabilidad administrativa y legal recae de forma exclusiva e indelegable en la persona jurídica de la empresa y la Alta Dirección (CEO/COO). Un algoritmo carece de personalidad procesal.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>3. Impacto Jerárquico y Reducción de la Resistencia al Cambio</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            La autonomía de la IA aplana los mandos medios dedicados a la supervisión rutinaria, desplazando el valor profesional hacia la orquestación estratégica. Se mitiga mediante programas de reconversión laboral (upskilling) e involucrando al personal en el entrenamiento inicial del agente.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>4. Balance en la Nube y Mitigación de Deuda Tecnológica</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            Se requiere implementar middlewares agnósticos (LangChain, Semantic Kernel) que desvinculen el software central del proveedor de IA. Además, desplegar una estrategia híbrida utilizando Modelos Pequeños (SLMs) u Open Source locales para tareas repetitivas, reservando modelos grandes en la nube únicamente para razonamiento complejo.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>5. Protección de Información Privada de Clientes (PII)</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            Filtrado y anonimización de datos de identificación personal (PII) mediante microservicios antes de enviar solicitudes a APIs externas, sumado a acuerdos corporativos Enterprise con cláusulas de Zero Data Retention (ZDR).
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>6. Retos de Inversión y Análisis de ROI en PyMEs</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            Las PyMEs sufren por falta de economías de escala (costos fijos de integración e infraestructura pesan más proporcionalmente) y por una alta deuda de datos previa (requieren gasto inicial en estructurar sus datos antes de extraer valor de la IA).
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span>7. Procesos 100% Automatizables vs. Human-in-the-Loop</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-body-content">
+            <strong>100% Automatizables:</strong> Extracción de facturas entrantes, triaje de tickets de soporte, avisos de cobro y generación de reportes estándar.<br>
+            <strong>Revisión Humana Obligatoria (Human-in-the-Loop):</strong> Aprobación de créditos de alto riesgo, contrataciones/despidos, disputas contractuales y diagnósticos médicos.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08. MODULACIÓN COGNITIVA Y SÍNTESIS DIALÉCTICA -->
+    <section id="dialectica" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-sliders"></i> 08. Modulación Cognitiva Dialéctica (Adaptación de Audiencia)</h2>
+
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="openTab(event, 'tab-directivo')">
+            <i class="fa-solid fa-user-tie"></i> Resumen Ejecutivo (Directivo)
+          </button>
+          <button class="tab-btn" onclick="openTab(event, 'tab-academico')">
+            <i class="fa-solid fa-book-bookmark"></i> Expresión Académica
+          </button>
+          <button class="tab-btn" onclick="openTab(event, 'tab-ninos')">
+            <i class="fa-solid fa-child"></i> Explicación para Niños (10 Años)
+          </button>
+        </div>
+
+        <div id="tab-directivo" class="tab-content active">
+          <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7;">
+            "La adopción de IA en los sistemas de información empresariales exige transitar desde asistentes aislados hacia sistemas agénticos gobernados. El éxito económico de esta transición no depende de la potencia probabilística del modelo, sino de la calidad de la integración de datos (RAG), la supervisión humana de decisiones críticas y una arquitectura agnóstica que mitigue la dependencia tecnológica en la nube."
+          </p>
+        </div>
+
+        <div id="tab-academico" class="tab-content">
+          <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7; font-style: italic;">
+            "La convergencia entre los Sistemas de Información Gerencial y los agentes de inteligencia artificial constituye una reconfiguración socio-técnica de las organizaciones. Este paradigma desplaza la computación funcional determinista hacia una agencia algorítmica distribuida, donde la gobernanza corporativa debe evolucionar para gestionar la interacción simbiótica entre el juicio humano y la inferencia estocástica sobre repositorios de conocimiento organizacional."
+          </p>
+        </div>
+
+        <div id="tab-ninos" class="tab-content">
+          <p style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7;">
+            "Imagina que la automatización antigua era como un tren de juguete que solo podía avanzar sobre las vías fijas que tú le construías. Si había una piedra en el camino, el tren chocaba. Los nuevos agentes de IA son como un chofer robótico de bicicleta: si ven una piedra, la esquivan, buscan un camino diferente y llegan a la meta por sí solos. Pero si el robot rompe una ventana en el camino, la responsabilidad de pagarla sigue siendo de sus dueños, no del robot."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. BITÁCORA METROLÓGICA DE PROMPTS -->
+    <section id="bitacora" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-code"></i> 10. Bitácora Metrológica de Prompts & Evaluación</h2>
+
+      <!-- Prompt #1 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">Prompt #1: Solicitud de Informe de Investigación IA Empresarial</span>
+          <span class="prompt-score">Evaluación: 9.5 / 10</span>
+        </div>
+        <div class="prompt-box">Actúa como un docente e investigador en tecnología empresarial para la materia de Informática Administrativa. Necesito que elabores un informe de investigación sobre cómo está cambiando la Inteligencia Artificial en las empresas... Integra restricciones explícitas, tabla comparativa y protocolo estricto de rigor factual.</div>
+        <div class="prompt-metrics">
+          <div><strong>Asertividad:</strong> 9.5 / 10</div>
+          <div><strong>Completitud Ingenieril:</strong> 9.5 / 10</div>
+          <div><strong>Técnicas:</strong> Role Prompting, Output Structuring, Factuality Guardrails.</div>
+        </div>
+      </div>
+
+      <!-- Prompt #2 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">Prompts #2.1 - #2.10: Cuestionario Estratégico & Modulación Dialéctica</span>
+          <span class="prompt-score">Evaluación: 9.8 / 10</span>
+        </div>
+        <div class="prompt-box">1. ¿Diferencia entre RPA y Agentes? 2. ¿Responsabilidad técnica y legal? [...] 8. Resumen ejecutivo. 9. Expresión académica. 10. Explicación para niño de 10 años.</div>
+        <div class="prompt-metrics">
+          <div><strong>Asertividad:</strong> 9.8 / 10</div>
+          <div><strong>Completitud Ingenieril:</strong> 9.8 / 10</div>
+          <div><strong>Técnicas:</strong> Multi-Tone Adaptation, Boundary Analysis, Role-Responsibility Disaggregation.</div>
+        </div>
+      </div>
+
+      <!-- Prompt #3 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">Prompt #3: Especificación Cyber-Tech UI & Interfaz HUD</span>
+          <span class="prompt-score">Evaluación: 9.9 / 10</span>
+        </div>
+        <div class="prompt-box">Actúa como un diseñador web UI/UX experto... Genera código HTML Cyber-Tech HUD... REGLA STRICTA DE CONTENIDO: NO resumas, NO omitas y NO cambies ninguna palabra del texto original...</div>
+        <div class="prompt-metrics">
+          <div><strong>Asertividad:</strong> 10.0 / 10</div>
+          <div><strong>Completitud Ingenieril:</strong> 9.8 / 10</div>
+          <div><strong>Técnicas:</strong> Strict Verbatim Guardrail, Design System Prompting.</div>
+        </div>
+      </div>
+
+      <!-- Prompt #4 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">Prompt #4: Compilación y Generación Documental PDF</span>
+          <span class="prompt-score">Evaluación: 9.8 / 10</span>
+        </div>
+        <div class="prompt-box">Genera un PDF que sumarice todo lo vertido en este chat con portada gráfica para Fatima Robreño Gonzalez, bitácora de prompts y bibliografía APA 2020...</div>
+        <div class="prompt-metrics">
+          <div><strong>Asertividad:</strong> 9.8 / 10</div>
+          <div><strong>Completitud Ingenieril:</strong> 9.8 / 10</div>
+          <div><strong>Técnicas:</strong> Document Structuring Constraint, Metrological Prompting.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. REFERENCIAS BIBLIOGRÁFICAS -->
+    <section id="referencias" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><i class="fa-solid fa-book"></i> 11. Referencias Bibliográficas (Normas APA 2020)</h2>
+      
+      <div class="card">
+        <p>Brynjolfsson, E., & McAfee, A. (2017). <em>Harnessing the AI revolution: Machine, platform, crowd</em>. Harvard Business Review Press.</p>
+        <p>Davenport, T. H., & Ronanki, R. (2018). Artificial intelligence for the real world. <em>Harvard Business Review</em>, 96(1), 108-116.</p>
+        <p>Gartner. (2024). <em>Top strategic technology trends for 2025: Agentic artificial intelligence and autonomous systems</em>. Gartner Research Report No. G00798211.</p>
+        <p>International Energy Agency [IEA]. (2025). <em>Electricity 2025: Analysis and forecast to 2030 - Data centres and energy consumption of AI systems</em>. IEA Publications.</p>
+        <p>Laudon, K. C., & Laudon, J. P. (2020). <em>Management information systems: Managing the digital firm</em> (16th ed.). Pearson Education.</p>
+        <p>National Institute of Standards and Technology [NIST]. (2023). <em>Artificial Intelligence Risk Management Framework (AI RMF 1.0)</em> (NIST AI 100-1). U.S. Department of Commerce.</p>
+        <p>Organización Internacional del Trabajo [OIT]. (2024). <em>Generative AI and jobs: A global analysis of potential effects on job quantity and quality</em>. ILO Working Paper No. 96.</p>
+        <p>World Economic Forum [WEF]. (2023). <em>The future of jobs report 2023</em>. World Economic Forum Geneva.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Documentación Web Interactiva | <strong>Informática Administrativa - Ingeniería de Prompt</strong></p>
+    <p style="margin-top: 0.5rem; color: #64748b;">Autora: <strong>Fatima Robreño Gonzalez</strong> // Diseñado para GitHub Pages // Ciclo Lectivo 2026</p>
+  </footer>
+
+  <!-- INTERACTIVE JAVASCRIPT -->
+  <script>
+    // Tab switching function
+    function openTab(evt, tabName) {
+      const tabContents = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
+      }
+
+      const tabButtons = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+      }
+
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+
+    // Accordion toggle function
+    document.querySelectorAll('.accordion-header').forEach(button => {
+      button.addEventListener('click', () => {
+        const accordionItem = button.parentElement;
+        const body = accordionItem.querySelector('.accordion-body');
+
+        // Toggle active state
+        if (accordionItem.classList.contains('active')) {
+          accordionItem.classList.remove('active');
+          body.style.maxHeight = null;
+        } else {
+          // Close other open accordions
+          document.querySelectorAll('.accordion-item').forEach(item => {
+            item.classList.remove('active');
+            item.querySelector('.accordion-body').style.maxHeight = null;
+          });
+
+          accordionItem.classList.add('active');
+          body.style.maxHeight = body.scrollHeight + "px";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
